@@ -25,7 +25,7 @@ const formateDate=(time:number)=>{
     return `${day}/${month}/${year} ${hours}:${minutes}${ampm}`;
 }
 
-const Unread = ({markAsRead,read}:{markAsRead:Function,read:string[]}) => {
+const Unread = ({markAsRead,read,favorites,markAsFavorites}:{markAsRead:Function,read:string[],favorites:string[],markAsFavorites:Function}) => {
     const [data,setData]=useState<{list:email[],total:number}>({list:[],total:0})
     const [page,setPage]=useState(1)
     const totalPage = Math.ceil(data.total/10)
@@ -49,7 +49,7 @@ const Unread = ({markAsRead,read}:{markAsRead:Function,read:string[]}) => {
   return (
       <div>
         {data.list.map((email:email)=>{
-            return <div key={email.id} onClick={()=>{handleClickOnEmail(email)}} className={` ${email.id===id?"border-accent":"border-border"} ${read.includes(email.id)?"bg-readBackgound":""} bg-white rounded-xl border-2 flex text-text mb-4 cursor-pointer`}>
+            return <div key={email.id} onClick={()=>{handleClickOnEmail(email)}} className={` ${email.id===id?"border-accent":"border-border"} ${read.includes(email.id)?"bg-readBackgound":"bg-white"} rounded-xl border-2 flex text-text mb-4 cursor-pointer`}>
             <div className="flex justify-center pt-4 px-6">
                 <h1 className="w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white font-semibold text-2xl">{email.from.name[0].toUpperCase()}</h1>
             </div>
@@ -59,7 +59,7 @@ const Unread = ({markAsRead,read}:{markAsRead:Function,read:string[]}) => {
                 <p className="mt-3 whitespace-nowrap overflow-hidden">{email.short_description}</p>
                 <div className="flex gap-4">
                     <p>{formateDate(email.date)}</p>
-                    <p className="font-semibold text-accent cursor-pointer">Favorite</p>
+                    <p onClick={(e)=>{e.stopPropagation();markAsFavorites(email.id)}} className={`font-semibold text-accent cursor-pointer ${favorites.includes(email.id)?"hidden":""}`}>Favorite</p>
                 </div>
             </div>
         </div>

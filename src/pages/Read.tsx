@@ -25,10 +25,11 @@ const formateDate=(time:number)=>{
   return `${day}/${month}/${year} ${hours}:${minutes}${ampm}`;
 }
 
-const Read = ({read,id}:{read:string[],id:string}) => {
+const Read = ({read,id,favorites,markAsFavorites}:{read:string[],id:string,favorites:string[],markAsFavorites:Function}) => {
   const [data,setData]=useState([])
   const navigate = useNavigate()
   useEffect(()=>{
+    if(read.length==0) return;
     (async()=>{
       try {
         const response = await axios.get("https://flipkart-email-mock.now.sh")
@@ -40,7 +41,7 @@ const Read = ({read,id}:{read:string[],id:string}) => {
         console.log(error)
       }
     })()
-  },[])
+  },[read])
   return (
     <div>
       {data.map((email:email)=>{
@@ -54,7 +55,7 @@ const Read = ({read,id}:{read:string[],id:string}) => {
                 <p className="mt-3 whitespace-nowrap overflow-hidden">{email.short_description}</p>
                 <div className="flex gap-4">
                     <p>{formateDate(email.date)}</p>
-                    <p className="font-semibold text-accent cursor-pointer">Favorite</p>
+                    <p onClick={(e)=>{e.stopPropagation();markAsFavorites(email.id)}} className={`font-semibold text-accent cursor-pointer ${favorites.includes(email.id)?"hidden":""}`}>Favorite</p>
                 </div>
             </div>
         </div>
